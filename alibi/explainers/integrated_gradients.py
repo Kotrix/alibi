@@ -133,9 +133,7 @@ def _run_forward(model: Union[tf.keras.models.Model, 'keras.models.Model'],
             raise ValueError("target cannot be `None` if `model` output dimensions > 1")
         return ps
 
-    preds = model(x)
-    if len(model.output_shape) > 1 and model.output_shape[1] > 1:
-        preds = _select_target(preds, target)
+    preds = model(x)[1]
 
     return preds
 
@@ -165,7 +163,7 @@ def _gradients_input(model: Union[tf.keras.models.Model, 'keras.models.Model'],
         tape.watch(x)
         preds = _run_forward(model, x, target)
 
-    grads = tape.gradient(preds, x)
+        grads = tape.gradient(preds, x)
 
     return grads
 
@@ -609,7 +607,7 @@ class IntegratedGradients(Explainer):
                     attributions=attributions)
 
         # calculate predictions
-        predictions = self.model(X).numpy()
+        predictions = self.model(X)[1].numpy()
         data.update(predictions=predictions)
 
         # calculate convergence deltas
