@@ -133,7 +133,7 @@ def _run_forward(model: Union[tf.keras.models.Model, 'keras.models.Model'],
             raise ValueError("target cannot be `None` if `model` output dimensions > 1")
         return ps
 
-    preds = model(x)[1]
+    preds = model(x)[0]
 
     return preds
 
@@ -607,7 +607,7 @@ class IntegratedGradients(Explainer):
                     attributions=attributions)
 
         # calculate predictions
-        predictions = self.model(X)[1].numpy()
+        predictions = self.model(X)[0].numpy()
         data.update(predictions=predictions)
 
         # calculate convergence deltas
